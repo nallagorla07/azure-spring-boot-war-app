@@ -1,6 +1,18 @@
 # Maven package Java project Web App to Linux on Azure
 - task: Maven@4
   inputs:
+    azureSubscription: 'Azure subscription 1 (ced0984c-4673-4a39-a1b7-aad8bd75aa67)'
+    mavenPomFile: 'pom.xml'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    javaHomeOption: 'JDKVersion'
+    mavenVersionOption: 'Default'
+    mavenAuthenticateFeed: false
+    effectivePomSkip: false
+    sonarQubeRunAnalysis: true
+    sqMavenPluginVersionChoice: 'latest'
+- task: Maven@4
+  inputs:
     mavenPomFile: 'pom.xml'
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'

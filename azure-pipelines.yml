@@ -1,5 +1,5 @@
 # Maven package Java project Web App to Linux on Azure
-- task: Maven@4
+- task: Maven@3
   inputs:
     azureSubscription: 'Azure subscription 1 (ced0984c-4673-4a39-a1b7-aad8bd75aa67)'
     mavenPomFile: 'pom.xml'
@@ -11,7 +11,7 @@
     effectivePomSkip: false
     sonarQubeRunAnalysis: true
     sqMavenPluginVersionChoice: 'latest'
-- task: Maven@4
+- task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
     publishJUnitResults: true
@@ -26,7 +26,7 @@
     pmdRunAnalysis: true
     findBugsRunAnalysis: true
     spotBugsRunAnalysis: true
-- task: Maven@4
+- task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
     publishJUnitResults: true
@@ -39,7 +39,6 @@
 # Build your Java project and deploy it to Azure as a Linux web app
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/java
-
 trigger:
 - master
 
@@ -57,19 +56,24 @@ stages:
     displayName: Maven Package and Publish Artifacts
     pool:
       vmImage: $(vmImageName)
-
     steps:
     - task: Maven@4
-      displayName: 'Maven Package'
+      displayName: 'Maven Build with Code Analysis'
       inputs:
         mavenPomFile: 'pom.xml'
+        goals: 'clean package'
         mavenOptions: '-Xmx3072m'
         javaHomeOption: 'JDKVersion'
         jdkVersionOption: '1.17'
         jdkArchitectureOption: 'x64'
         publishJUnitResults: true
         testResultsFiles: '**/surefire-reports/TEST-*.xml'
-        goals: 'clean package'
+        sonarQubeRunAnalysis: true
+        sqMavenPluginVersionChoice: 'latest'
+        checkStyleRunAnalysis: true
+        pmdRunAnalysis: true
+        findBugsRunAnalysis: true
+        spotBugsRunAnalysis: true
 
     - task: CopyFiles@2
       displayName: 'Copy Files to artifact staging directory'
@@ -106,3 +110,10 @@ stages:
               appType: webAppLinux
               appName: $(webAppName)
               package: '$(Pipeline.Workspace)/drop/**/*.war'
+
+
+    
+       
+       
+
+
